@@ -1,0 +1,13 @@
+node_modules
+.idea
+typings
+server/**/*.js
+server/**/*.js.map
+client/**/*.js
+client/**/*.js.map
+tools/**/*.js
+tools/**/*.js.map
+test/**/*.js
+test/**/*.js.map
+saved/**/*
+/npm-debug.log
