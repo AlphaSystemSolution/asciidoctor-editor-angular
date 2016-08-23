@@ -1,7 +1,7 @@
 /// <reference path="../typings/index.d.ts" />
 import * as monk from "monk";
 import * as Promise from "es6-promise";
-import {MongoTool} from '../server/mongo-tool';
+import {MongoTool} from './mongo-tool';
 import {User, NewUser, Folder, NewFolder} from '../client/components/shared/model/common';
 
 // MongoTool.initializeUserCollection();
