@@ -2,19 +2,24 @@
  * Created by sali on 8/19/2016.
  */
 
-import {Component} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 
-import {SelectItem} from 'primeng/primeng';
+import {OverlayPanel, SelectItem} from 'primeng/primeng';
 
 import {BaseDialog} from './basedialog';
+import {FolderChooserComponent} from '../shared/components/folderchooser.component';
 import {DocumentType} from '../shared/model/documenttype';
 import {AsciiDocInfo} from '../shared/model/asciidocinfo';
+import {Folder} from '../shared/model/common';
 
 @Component({
     selector: 'new-document-dialog',
     templateUrl: './client/components/dialogs/newdocument.dialog.html'
 })
 export class NewDocumentDialog extends BaseDialog {
+
+    @ViewChild("folderChooser")
+    folderChooser: FolderChooserComponent;
 
     documentTypes: SelectItem[];
 
@@ -29,7 +34,7 @@ export class NewDocumentDialog extends BaseDialog {
         this.asciiDocInfo = new AsciiDocInfo();
         this.asciiDocInfo.documentType = DocumentType.ARTICLE;
         this.asciiDocInfo.documentName = "";
-        this.asciiDocInfo.baseDir = "/usr/default"; // TODO: read this from user profile
+        this.asciiDocInfo.baseDir = "/" + sessionStorage.getItem("userName") + "/";
     }
 
     createNewDocument() {
@@ -37,8 +42,18 @@ export class NewDocumentDialog extends BaseDialog {
     }
 
     disable(): boolean {
-        let documentName:string = this.asciiDocInfo.documentName;
+        let baseDir: string = this.asciiDocInfo.baseDir;
+        let invalidBaseDir = !baseDir || (baseDir && baseDir.trim().length <= 0);
+        let documentName: string = this.asciiDocInfo.documentName;
         let invalidName: boolean = (documentName !== undefined && documentName.trim().length <= 0);
-        return this.asciiDocInfo.documentType === null || invalidName;
+        return (this.asciiDocInfo.documentType === null) || invalidBaseDir || invalidName;
+    }
+
+    updateBaseDir(folder: Folder) {
+        this.asciiDocInfo.baseDir = folder.path;
+    }
+
+    toggleOverlay(event) {
+        this.folderChooser.toggle(event);
     }
 }
