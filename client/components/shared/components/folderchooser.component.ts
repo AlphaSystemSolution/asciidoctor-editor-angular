@@ -11,11 +11,14 @@ import {Folder, NewFolder} from '../model/common';
 @Component({
     selector: 'folder-chooser',
     template: `
-        <p-overlayPanel #op [dismissable]="true" [showCloseIcon]="true">
+        <p-overlayPanel #treeOp [dismissable]="true" [showCloseIcon]="true">
             <p-tree [value]="folders" selectionMode="single" [(selection)]="selectedFolder" [style]="{'max-height':'200px','overflow':'auto'}" 
                 (onNodeSelect)="nodeSelect($event)" (onNodeExpand)="loadNode($event)" [contextMenu]="cm"></p-tree>
         </p-overlayPanel>
         <p-contextMenu #cm [model]="items"></p-contextMenu>
+        <p-overlayPanel #newFolderOp [dismissable]="true" (onAfterHide)="createNewFolder($event)">
+            <input type="text" size="20" class="form-control" pInputText [(ngModel)]="newFolderName"/>
+        </p-overlayPanel>
         `
 })
 export class FolderChooserComponent implements OnInit, AfterViewInit {
@@ -26,8 +29,13 @@ export class FolderChooserComponent implements OnInit, AfterViewInit {
     private parentPath: string;
     private rootFolder: Folder;
 
-    @ViewChild("op")
-    overlayPanel: OverlayPanel;
+    newFolderName: string;
+
+    @ViewChild("treeOp")
+    treeOverlayPanel: OverlayPanel;
+
+    @ViewChild("newFolderOp")
+    newFolderOverlayPanel: OverlayPanel;
 
     @Input()
     currentFolder: string;
@@ -49,7 +57,7 @@ export class FolderChooserComponent implements OnInit, AfterViewInit {
             this.loadChildren(rootNode, true, true);
         }
         this.items = [
-            { label: 'Create Folder', icon: 'fa-plus', command: (event) => console.log(this.selectedFolder.data) },
+            { label: 'Create Folder', icon: 'fa-plus', command: (event) => this.newFolderOverlayPanel.toggle(event) },
             { label: 'Remove Folder', icon: 'fa-minus', command: (event) => console.log(this.selectedFolder.data) }
         ];
     }
@@ -129,18 +137,82 @@ export class FolderChooserComponent implements OnInit, AfterViewInit {
     }
 
     toggle(event) {
-        console.log("Current Folder: " + this.currentFolder);
-        this.overlayPanel.toggle(event);
+        let newFolder: boolean = true;
+        if (!this.currentFolder.endsWith("/")) {
+            this.currentFolder += "/";
+        }
+        for (var i = 0; i < this.folders.length; i++) {
+            let item: TreeNode = this.folders[i];
+            let node: TreeNode = FolderChooserComponent.findNode(this.currentFolder, item);
+            if (node && node !== null) {
+                this.selectedFolder = node;
+                newFolder = false;
+                break;
+            }
+        }
+
+        if (newFolder) {
+            console.log("New Folder %s", this.currentFolder);
+        }
+
+        this.treeOverlayPanel.toggle(event);
+    }
+
+    private static findNode(current: string, root: TreeNode): TreeNode {
+        let node: TreeNode = null;
+        let data: Folder = <Folder>root.data;
+        if (data.path === current) {
+            node = root;
+            return node;
+        }
+        let chidren: TreeNode[] = root.children;
+        if (!chidren || chidren.length <= 0) {
+            return node;
+        }
+        for (var i = 0; i < chidren.length; i++) {
+            let child: TreeNode = chidren[i];
+            return FolderChooserComponent.findNode(current, child);
+        }
+        return node;
     }
 
     createNewFolder(event) {
-        let folder: Folder = undefined;
-        if (this.selectedFolder) {
-            folder = <Folder>this.selectedFolder.data;
+        if (!this.newFolderName || this.newFolderName.trim().length <= 0) {
+            // nothing to create
+            return;
         }
+        let folder: Folder = <Folder>this.selectedFolder.data;
         if (!folder) {
             folder = this.rootFolder;
         }
-        console.log("Create New: %s", folder.path);
+
+        let children: TreeNode[] = this.selectedFolder.children;
+        for (var i = 0; i < children.length; i++) {
+            let node: TreeNode = children[i];
+            let f: Folder = node.data;
+            if (f.name === this.newFolderName) {
+                console.log("Folder with name %s is already exists under %s", this.newFolderName, folder.path);
+                this.selectedFolder = node;
+                this.onSelect.emit(f);
+                this.newFolderName = undefined;
+                return;
+            }
+        }
+
+        this.dataService.createFolder(sessionStorage.getItem("userName"), this.newFolderName, folder.path)
+            .map(response => response.json())
+            .subscribe(
+            data => {
+                folder = <Folder>data;
+                this.selectedFolder.leaf = false;
+                let node: TreeNode = { "label": folder.name, "data": folder, children: [], "leaf": true };
+                this.selectedFolder.children.push(node);
+                this.selectedFolder = node;
+                this.onSelect.emit(folder);
+                this.newFolderName = undefined;
+            },
+            err => { console.log(err) },
+            () => { }
+            );
     }
 }
