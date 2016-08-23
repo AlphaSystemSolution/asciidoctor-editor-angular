@@ -1,7 +1,7 @@
 {
-  "name": "angular2-express-starter",
+  "name": "asciidoc-editor-angular2",
   "version": "1.0.0",
-  "description": "Starter application of Angular2 on Express",
+  "description": "Angular 2 based AsciiDoc Editor",
   "main": "gulpfile.js",
   "private": true,
   "scripts": {
@@ -17,7 +17,7 @@
   "engines": {
     "node": ">= 5.4.1 < 6"
   },
-  "author": "Vlado Tešanović",
+  "author": "Syed Farhan Ali",
   "license": "MIT",
   "dependencies": {
     "@angular/common": "2.0.0-rc.5",
