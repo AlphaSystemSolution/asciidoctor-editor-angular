@@ -6,7 +6,7 @@ export interface User {
     _id?: any;
     userName: string;
     email: string;
-    password: string;
+    password?: string;
     active: boolean;
 }
 
@@ -15,7 +15,7 @@ export class NewUser implements User {
 }
 
 export class DisplayableUser implements User {
-    constructor(public _id?, public userName?, public email?, public password?, public active?) { }
+    constructor(public _id?, public userName?, public email?, public active?) { }
 }
 
 export interface Folder {
