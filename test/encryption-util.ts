@@ -1,6 +1,4 @@
-/**
- * Created by sali on 8/21/2016.
- */
+/// <reference path="../typings/index.d.ts" />
 import * as crypto from 'crypto';
 
 const ALGORITHM: string = "AES256";
