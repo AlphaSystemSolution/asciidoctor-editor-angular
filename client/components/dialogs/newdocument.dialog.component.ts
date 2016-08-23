@@ -42,11 +42,15 @@ export class NewDocumentDialog extends BaseDialog {
     }
 
     disable(): boolean {
+        let rootDir: string = "/" + sessionStorage.getItem("userName") + "/";
         let baseDir: string = this.asciiDocInfo.baseDir;
-        let invalidBaseDir = !baseDir || (baseDir && baseDir.trim().length <= 0);
+        let invalidBaseDir = !baseDir || (baseDir && !baseDir.trim().startsWith(rootDir));
+        if (invalidBaseDir) {
+            this.asciiDocInfo.baseDir = rootDir;
+        }
         let documentName: string = this.asciiDocInfo.documentName;
         let invalidName: boolean = (documentName !== undefined && documentName.trim().length <= 0);
-        return (this.asciiDocInfo.documentType === null) || invalidBaseDir || invalidName;
+        return (this.asciiDocInfo.documentType === null) || invalidName;
     }
 
     updateBaseDir(folder: Folder) {
