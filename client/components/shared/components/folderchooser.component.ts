@@ -16,15 +16,35 @@ import {Folder, NewFolder} from '../model/common';
                 (onNodeExpand)="loadNode($event)" [contextMenu]="cm"></p-tree>
         </p-overlayPanel>
         <p-contextMenu #cm [model]="items"></p-contextMenu>
-        <p-overlayPanel #newFolderOp [dismissable]="true" (onAfterHide)="createNewFolder($event)">
-            <input type="text" size="20" class="form-control" pInputText [(ngModel)]="newFolderName"/>
-        </p-overlayPanel>
-        <p-dialog #removeNodeDialog header="Remove folder and its content" [closable]="false">
-            <div style="text-align:center;">Are you sure?</div>
+        <p-dialog #createFolderDialog header="Create folder" [closable]="false" [width]="400">
+            <div>
+                <div>
+                    <label>
+                         <span>Enter the name of the folder:</span>
+                    </label>
+                </div>
+            </div>
+            <div>
+                <span>&nbsp;</span>
+            </div>
+            <div>
+                <div>
+                     <input type="text" size="20" class="form-control" pInputText [(ngModel)]="newFolderName"/>
+                </div>
+            </div>
+            <footer>
+                <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+                    <button type="button" icon="fa-check" pButton label="Yes" (click)="createNewFolder($event)"></button>&nbsp;
+                    <button type="button" icon="fa-times" pButton label="NO" (click)="createFolderDialog.visible=false"></button>
+                </div>
+            </footer>
+        </p-dialog>
+        <p-dialog #removeFolderDialog header="Remove folder" [closable]="false">
+            <div>Do you want to delete currently selected folder and all of its content?</div>
             <footer>
                 <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
                     <button type="button" icon="fa-check" pButton label="Yes" (click)="removeFolder($event)"></button>&nbsp;
-                    <button type="button" icon="fa-times" pButton label="NO" (click)="removeNodeDialog.visible=false"></button>
+                    <button type="button" icon="fa-times" pButton label="NO" (click)="removeFolderDialog.visible=false"></button>
                 </div>
             </footer>
         </p-dialog>
@@ -43,11 +63,11 @@ export class FolderChooserComponent implements OnInit, AfterViewInit {
     @ViewChild("treeOp")
     treeOverlayPanel: OverlayPanel;
 
-    @ViewChild("newFolderOp")
-    newFolderOverlayPanel: OverlayPanel;
+    @ViewChild("createFolderDialog")
+    createFolderDialog: Dialog;
 
-    @ViewChild("removeNodeDialog")
-    removeNodeDialog: Dialog
+    @ViewChild("removeFolderDialog")
+    removeFolderDialog: Dialog
 
     @Input()
     currentFolder: string;
@@ -70,8 +90,8 @@ export class FolderChooserComponent implements OnInit, AfterViewInit {
             this.loadChildren(this.rootNode, true);
         }
         this.items = [
-            { label: 'Create Folder', icon: 'fa-plus', command: (event) => this.newFolderOverlayPanel.toggle(event) },
-            { label: 'Remove Folder', icon: 'fa-minus', command: (event) => this.removeNodeDialog.visible = true }
+            { label: 'Create Folder', icon: 'fa-plus', command: (event) => this.createFolderDialog.visible = true },
+            { label: 'Remove Folder', icon: 'fa-minus', command: (event) => this.removeFolderDialog.visible = true }
         ];
     }
 
@@ -187,6 +207,7 @@ export class FolderChooserComponent implements OnInit, AfterViewInit {
     }
 
     createNewFolder(event) {
+         this.createFolderDialog.visible = false;
         if (!this.newFolderName || this.newFolderName.trim().length <= 0) {
             // nothing to create
             return;
@@ -227,7 +248,7 @@ export class FolderChooserComponent implements OnInit, AfterViewInit {
     }
 
     removeFolder(event) {
-        this.removeNodeDialog.visible = false;
+        this.removeFolderDialog.visible = false;
         let folder: Folder = this.selectedFolder.data;
         let parentPath: string = folder.parentPath;
         let path: string = folder.path;
