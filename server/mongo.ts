@@ -94,12 +94,10 @@ module DataRoute {
             }
             let manager: monk.Manager = monk(MONGO_DATABASE_URI);
             let collection: monk.Collection = manager.get(FOLDER_COLLECTION_NAME);
-            let query: any = { "path": path };
+            let regex: string = "^" + path;
+            let query: any = { $or: [{ "path": path }, { "parentPath": { $regex: regex } }] };
             collection.remove(query)
-                .then(result => {
-                    console.log(">>>>>>>>>>>>>>>> %s", JSON.stringify(result));
-                    res.json(result);
-                });
+                .then(result => res.json(result));
         }
 
     }
