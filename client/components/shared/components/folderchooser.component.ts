@@ -3,7 +3,7 @@
  */
 import {Component, OnInit, ViewChild, AfterViewInit, Renderer, Input, Output, EventEmitter, SimpleChanges} from '@angular/core';
 
-import {MenuItem, OverlayPanel, TreeNode} from 'primeng/primeng';
+import {Dialog, MenuItem, OverlayPanel, TreeNode} from 'primeng/primeng';
 
 import {DataService} from '../data.service';
 import {Folder, NewFolder} from '../model/common';
@@ -12,13 +12,22 @@ import {Folder, NewFolder} from '../model/common';
     selector: 'folder-chooser',
     template: `
         <p-overlayPanel #treeOp [dismissable]="true" [showCloseIcon]="true">
-            <p-tree [value]="folders" selectionMode="single" [(selection)]="selectedFolder" [style]="{'max-height':'200px','overflow':'auto'}" 
-                (onNodeSelect)="nodeSelect($event)" (onNodeExpand)="loadNode($event)" [contextMenu]="cm"></p-tree>
+            <p-tree [value]="folders" selectionMode="single" [(selection)]="selectedFolder" (onNodeSelect)="nodeSelect($event)" 
+                (onNodeExpand)="loadNode($event)" [contextMenu]="cm"></p-tree>
         </p-overlayPanel>
         <p-contextMenu #cm [model]="items"></p-contextMenu>
         <p-overlayPanel #newFolderOp [dismissable]="true" (onAfterHide)="createNewFolder($event)">
             <input type="text" size="20" class="form-control" pInputText [(ngModel)]="newFolderName"/>
         </p-overlayPanel>
+        <p-dialog #removeNodeDialog header="Remove folder and its content" [closable]="false">
+            <div style="text-align:center;">Are you sure?</div>
+            <footer>
+                <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+                    <button type="button" icon="fa-check" pButton label="Yes" (click)="removeFolder($event)"></button>&nbsp;
+                    <button type="button" icon="fa-times" pButton label="NO" (click)="removeNodeDialog.visible=false"></button>
+                </div>
+            </footer>
+        </p-dialog>
         `
 })
 export class FolderChooserComponent implements OnInit, AfterViewInit {
@@ -26,8 +35,8 @@ export class FolderChooserComponent implements OnInit, AfterViewInit {
     folders: TreeNode[];
     selectedFolder: TreeNode;
     items: MenuItem[];
-    private parentPath: string;
     private rootFolder: Folder;
+    private rootNode: TreeNode;
 
     newFolderName: string;
 
@@ -36,6 +45,9 @@ export class FolderChooserComponent implements OnInit, AfterViewInit {
 
     @ViewChild("newFolderOp")
     newFolderOverlayPanel: OverlayPanel;
+
+    @ViewChild("removeNodeDialog")
+    removeNodeDialog: Dialog
 
     @Input()
     currentFolder: string;
@@ -50,15 +62,16 @@ export class FolderChooserComponent implements OnInit, AfterViewInit {
         this.folders = [];
         let userName: string = sessionStorage.getItem("userName");
         if (userName) {
-            this.parentPath = "/" + userName + "/";
-            this.rootFolder = new NewFolder(userName, this.parentPath, "/");
-            let rootNode: TreeNode = { "label": userName, "data": this.rootFolder, children: [], "leaf": false };
-            this.selectedFolder = rootNode;
-            this.loadChildren(rootNode, true, true);
+            let parentPath: string = "/" + userName + "/";
+            this.rootFolder = new NewFolder(userName, parentPath, "/");
+            this.rootNode = { "label": userName, "data": this.rootFolder, children: [], "leaf": false };
+            this.selectedFolder = this.rootNode;
+            this.folders.push(this.rootNode);
+            this.loadChildren(this.rootNode, true);
         }
         this.items = [
             { label: 'Create Folder', icon: 'fa-plus', command: (event) => this.newFolderOverlayPanel.toggle(event) },
-            { label: 'Remove Folder', icon: 'fa-minus', command: (event) => console.log(this.selectedFolder.data) }
+            { label: 'Remove Folder', icon: 'fa-minus', command: (event) => this.removeNodeDialog.visible = true }
         ];
     }
 
@@ -97,21 +110,18 @@ export class FolderChooserComponent implements OnInit, AfterViewInit {
             let node: TreeNode = event.node;
             let children: TreeNode[] = node.children;
             if (children.length <= 0) {
-                this.loadChildren(node, false, false);
+                this.loadChildren(node, false);
             }
         }
     }
 
-    private loadChildren(rootNode: TreeNode, addRoot: boolean, clear: boolean) {
+    private loadChildren(rootNode: TreeNode, clear: boolean) {
         let folder: Folder = <Folder>rootNode.data;
         let parentPath: string = folder.path;
         this.dataService.findChildFolders(parentPath)
             .map(response => response.json())
             .subscribe(
             data => {
-                if (addRoot) {
-                    this.folders.push(rootNode);
-                }
                 if (data.length <= 0) {
                     rootNode.leaf = true;
                 } else {
@@ -126,7 +136,6 @@ export class FolderChooserComponent implements OnInit, AfterViewInit {
                 console.log("Error: %s", err);
                 if (clear) {
                     this.folders = [];
-                    this.parentPath = undefined;
                     this.rootFolder = undefined;
                 }
             },
@@ -141,17 +150,15 @@ export class FolderChooserComponent implements OnInit, AfterViewInit {
         if (!this.currentFolder.endsWith("/")) {
             this.currentFolder += "/";
         }
-        for (var i = 0; i < this.folders.length; i++) {
-            let item: TreeNode = this.folders[i];
-            let node: TreeNode = FolderChooserComponent.findNode(this.currentFolder, item);
-            if (node && node !== null) {
-                this.selectedFolder = node;
-                newFolder = false;
-                break;
-            }
+
+        let node: TreeNode = FolderChooserComponent.findNode(this.currentFolder, this.rootNode);
+        if (node && node !== null) {
+            this.selectedFolder = node;
+            newFolder = false;
         }
 
         if (newFolder) {
+            // TODO: if user has typed some folder in the input text and folder doesn't exists then create it
             console.log("New Folder %s", this.currentFolder);
         }
 
@@ -165,14 +172,17 @@ export class FolderChooserComponent implements OnInit, AfterViewInit {
             node = root;
             return node;
         }
-        let chidren: TreeNode[] = root.children;
-        if (!chidren || chidren.length <= 0) {
-            return node;
+        let children: TreeNode[] = root.children;
+        if (children) {
+            for (var i = 0; i < children.length; i++) {
+                let child: TreeNode = children[i];
+                node = FolderChooserComponent.findNode(current, child);
+                if (node) {
+                    break;
+                }
+            }
         }
-        for (var i = 0; i < chidren.length; i++) {
-            let child: TreeNode = chidren[i];
-            return FolderChooserComponent.findNode(current, child);
-        }
+
         return node;
     }
 
@@ -212,6 +222,39 @@ export class FolderChooserComponent implements OnInit, AfterViewInit {
                 this.newFolderName = undefined;
             },
             err => { console.log(err) },
+            () => { }
+            );
+    }
+
+    removeFolder(event) {
+        this.removeNodeDialog.visible = false;
+        let folder: Folder = this.selectedFolder.data;
+        let parentPath: string = folder.parentPath;
+        let path: string = folder.path;
+        this.dataService.removeFolder(sessionStorage.getItem("userName"), path)
+            .map(response => response.json())
+            .subscribe(
+            data => {
+                // make parent of this node as selected folder and remove it from children array
+                let node: TreeNode = FolderChooserComponent.findNode(parentPath, this.rootNode);
+                let children: TreeNode[] = node.children;
+                let index: number = -1;
+                for (var i = 0; i < children.length; i++) {
+                    let child: TreeNode = children[i];
+                    let f: Folder = <Folder>child.data;
+                    if (f.path === path) {
+                        index = i;
+                        break;
+                    }
+                }
+                children.splice(index, 1);
+                if (node.children.length <= 0) {
+                    node.leaf = true;
+                }
+                this.selectedFolder = node;
+                this.onSelect.emit(node.data);
+            },
+            err => { },
             () => { }
             );
     }

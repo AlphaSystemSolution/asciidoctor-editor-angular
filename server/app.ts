@@ -24,6 +24,7 @@ var route: dataRoute.Route = new dataRoute.Route();
 router.post("/authenticate", route.authenticate.bind(route.authenticate));
 router.post("/folders", route.findChildFolders.bind(route.findChildFolders));
 router.post("/createFolder", route.createFolder.bind(route.createFolder));
+router.post("/removeFolder", route.removeFolder.bind(route.removeFolder));
 app.use("/data", router);
 
 // error handlers

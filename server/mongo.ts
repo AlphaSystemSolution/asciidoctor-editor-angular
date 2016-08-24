@@ -63,11 +63,8 @@ module DataRoute {
             }
 
             if (parentPath) {
-                // make sure path parent folder belongs to current user
-                // if path belongs to surrent user then it must starts with "/<user_name>/"
-                let p: string = "/" + userName + "/";
-                if (!parentPath.startsWith(p)) {
-                    res.sendStatus(401).json({ "code": "INVALID_PARENT_PATH", "description": "Supplied parent path does not belong to current user" });
+                if (!checkPath(userName, parentPath)) {
+                    res.sendStatus(401).json({ "code": "INVALID_PATH", "description": "Supplied parent path does not belong to current user" });
                     return;
                 }
                 if (!folderName) {
@@ -85,8 +82,40 @@ module DataRoute {
                 .catch(err => res.sendStatus(400).json({ "code": "FOLDER_ALREADY_EXISTS", "description": "Folder with the given name is already exists." }));
         }
 
+        public removeFolder(req: express.Request, res: express.Response, next: express.NextFunction) {
+            let userName: string = req.body.userName
+            let path: string = req.body.path;
+            if (!userName || !path) {
+                // TODO:
+            }
+            if (!checkPath(userName, path)) {
+                res.sendStatus(401).json({ "code": "INVALID_PATH", "description": "Supplied parent path does not belong to current user" });
+                return;
+            }
+            let manager: monk.Manager = monk(MONGO_DATABASE_URI);
+            let collection: monk.Collection = manager.get(FOLDER_COLLECTION_NAME);
+            let query: any = { "path": path };
+            collection.remove(query)
+                .then(result => {
+                    console.log(">>>>>>>>>>>>>>>> %s", JSON.stringify(result));
+                    res.json(result);
+                });
+        }
+
     }
 };
+
+function checkPath(userName: string, path: string): boolean {
+    if (path) {
+        // make sure path parent folder belongs to current user
+        // if path belongs to surrent user then it must starts with "/<user_name>/"
+        let p: string = "/" + userName + "/";
+        if (path.startsWith(p)) {
+            return true;
+        }
+    }
+    return false;
+}
 
 function encryptText(clearText: string): string {
     let encryptedText: string = null;

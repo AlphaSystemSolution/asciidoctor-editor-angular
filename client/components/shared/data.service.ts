@@ -34,4 +34,11 @@ export class DataService {
         let options = new RequestOptions({ headers: headers });
         return this.http.post(DataService.BASE_URL + "createFolder", body, options);
     }
+
+    public removeFolder(userName: string, path: string): Observable<Response> {
+        let body = { "userName": userName, "path": path };
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+        return this.http.post(DataService.BASE_URL + "removeFolder", body, options);
+    }
 }
