@@ -11,11 +11,11 @@ export interface User {
 }
 
 export class NewUser implements User {
-    constructor(public userName?, public email?, public password?, public active?) { }
+    constructor(public userName?: string, public email?: string, public password?: string, public active?: boolean) { }
 }
 
 export class DisplayableUser implements User {
-    constructor(public _id?, public userName?, public email?, public active?) { }
+    constructor(public _id?: string, public userName?: string, public email?: string, public active?: boolean) { }
 }
 
 export interface Folder {
@@ -26,5 +26,5 @@ export interface Folder {
 }
 
 export class NewFolder implements Folder {
-    constructor(public name?, public path?, public parentPath?) { }
+    constructor(public name?: string, public path?: string, public parentPath?: string) { }
 }
