@@ -1,6 +1,7 @@
 /// <reference path="../typings/index.d.ts" />
-import * as monk from "monk";
-import * as crypto from 'crypto';
+import monk = require('monk');
+import {Manager, Collection} from 'monk';
+import crypto = require('crypto');
 import {Request, Response, NextFunction} from 'express';
 import {ParsedAsJson} from 'body-parser';
 
@@ -28,8 +29,8 @@ module DataRoute {
                 // TODO:
             }
 
-            let manager: monk.Manager = monk(MONGO_DATABASE_URI);
-            let collection: monk.Collection = manager.get(USER_COLLECTION_NAME);
+            let manager: Manager = monk(MONGO_DATABASE_URI);
+            let collection: Collection = manager.get(USER_COLLECTION_NAME);
 
             password = encryptText(password);
             let query: any = { "userName": userName, "password": password };
@@ -47,8 +48,8 @@ module DataRoute {
                 // TODO:
             }
 
-            let manager: monk.Manager = monk(MONGO_DATABASE_URI);
-            let collection: monk.Collection = manager.get(FOLDER_COLLECTION_NAME);
+            let manager: Manager = monk(MONGO_DATABASE_URI);
+            let collection: Collection = manager.get(FOLDER_COLLECTION_NAME);
 
             let query: any = { "parentPath": parentPath };
             collection.find(query)
@@ -78,8 +79,8 @@ module DataRoute {
                 folderName = userName;
             }
             let path: string = parentPath + folderName + "/";
-            let manager: monk.Manager = monk(MONGO_DATABASE_URI);
-            let collection: monk.Collection = manager.get(FOLDER_COLLECTION_NAME);
+            let manager: Manager = monk(MONGO_DATABASE_URI);
+            let collection: Collection = manager.get(FOLDER_COLLECTION_NAME);
             collection.insert(new NewFolder(folderName, path, parentPath))
                 .then(result => res.json(result))
                 .catch(err => res.sendStatus(400).json({ "code": "FOLDER_ALREADY_EXISTS", "description": "Folder with the given name is already exists." }));
@@ -96,8 +97,8 @@ module DataRoute {
                 res.sendStatus(401).json({ "code": "INVALID_PATH", "description": "Supplied parent path does not belong to current user" });
                 return;
             }
-            let manager: monk.Manager = monk(MONGO_DATABASE_URI);
-            let collection: monk.Collection = manager.get(FOLDER_COLLECTION_NAME);
+            let manager: Manager = monk(MONGO_DATABASE_URI);
+            let collection: Collection = manager.get(FOLDER_COLLECTION_NAME);
             let regex: string = "^" + path;
             let query: any = { $or: [{ "path": path }, { "parentPath": { $regex: regex } }] };
             collection.remove(query)
@@ -140,7 +141,7 @@ function decyptText(encryptedText: string): string {
     return clearText;
 }
 
-function extractFolders(manager: monk.Manager, res: Response, results: Object[]) {
+function extractFolders(manager: Manager, res: Response, results: Object[]) {
     let entries: IterableIterator<Object> = results.entries();
     let folders: Folder[] = [];
     results.forEach(function (entry) {
@@ -150,7 +151,7 @@ function extractFolders(manager: monk.Manager, res: Response, results: Object[])
     res.json(folders);
 }
 
-function extractUser(manager: monk.Manager, res: Response, result: Object) {
+function extractUser(manager: Manager, res: Response, result: Object) {
     let body = {};
     if (result) {
         let user: User = <User>result;
