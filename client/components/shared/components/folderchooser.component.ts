@@ -82,12 +82,12 @@ export class FolderChooserComponent implements OnInit, AfterViewInit {
         }, 200);
     }
 
-    nodeSelect(event) {
+    nodeSelect(event: any) {
         let node: TreeNode = event.node;
         this.onSelect.emit(<Folder>node.data);
     }
 
-    loadNode(event) {
+    loadNode(event: any) {
         if (event.node) {
             let node: TreeNode = event.node;
             let children: TreeNode[] = node.children;
@@ -127,7 +127,7 @@ export class FolderChooserComponent implements OnInit, AfterViewInit {
             );
     }
 
-    toggle(event) {
+    toggle(event: any) {
         let newFolder: boolean = true;
         if (!this.currentFolder.endsWith("/")) {
             this.currentFolder += "/";
@@ -168,8 +168,8 @@ export class FolderChooserComponent implements OnInit, AfterViewInit {
         return node;
     }
 
-    createNewFolder(event) {
-         this.createFolderDialog.visible = false;
+    createNewFolder(event: any) {
+        this.createFolderDialog.visible = false;
         if (!this.newFolderName || this.newFolderName.trim().length <= 0) {
             // nothing to create
             return;
@@ -209,7 +209,7 @@ export class FolderChooserComponent implements OnInit, AfterViewInit {
             );
     }
 
-    removeFolder(event) {
+    removeFolder(event: any) {
         this.removeFolderDialog.visible = false;
         let folder: Folder = this.selectedFolder.data;
         let parentPath: string = folder.parentPath;

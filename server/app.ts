@@ -34,7 +34,7 @@ if (app.get("env") === "development") {
 
     app.use(express.static(join(__dirname, '../node_modules')));
 
-    app.use(function (err, req: express.Request, res: express.Response, next: express.NextFunction) {
+    app.use(function (err: any, req: express.Request, res: express.Response, next: express.NextFunction) {
         res.status(err.status || 500);
         res.json({
             error: err,
@@ -44,7 +44,7 @@ if (app.get("env") === "development") {
 }
 
 // catch 404 and forward to error handler
-app.use(function (req: express.Request, res: express.Response, next) {
+app.use(function (req: express.Request, res: express.Response, next: Function) {
     let err = new Error("Not Found");
     next(err);
 });

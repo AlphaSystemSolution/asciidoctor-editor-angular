@@ -53,11 +53,11 @@ export class MenubarComponent implements OnInit {
     }
 
 
-    private newFile(event) {
+    private newFile(event: any) {
         this.newDocumentDialog.display = true;
     }
 
-    private openFile(event) {
+    private openFile(eventa: any) {
         console.log("Open file called.")
     }
 

@@ -57,7 +57,7 @@ export class NewDocumentDialog extends BaseDialog {
         this.asciiDocInfo.baseDir = folder.path;
     }
 
-    toggleOverlay(event) {
+    toggleOverlay(event: any) {
         this.folderChooser.toggle(event);
     }
 }
