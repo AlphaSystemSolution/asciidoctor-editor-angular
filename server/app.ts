@@ -1,12 +1,13 @@
 /// <reference path="../typings/index.d.ts" />
-import * as express from "express";
+import express = require("express");
+import {Router, Request, Response, NextFunction} from 'express';
 import { join } from "path";
 import * as favicon from "serve-favicon";
 import { json, urlencoded } from "body-parser";
 
 import * as dataRoute from './mongo';
 
-let router: express.Router = express.Router();
+let router: Router = express.Router();
 
 const app: express.Application = express();
 app.disable("x-powered-by");
@@ -34,7 +35,7 @@ if (app.get("env") === "development") {
 
     app.use(express.static(join(__dirname, '../node_modules')));
 
-    app.use(function (err: any, req: express.Request, res: express.Response, next: express.NextFunction) {
+    app.use(function (err: any, req: Request, res: Response, next: NextFunction) {
         res.status(err.status || 500);
         res.json({
             error: err,
@@ -44,14 +45,14 @@ if (app.get("env") === "development") {
 }
 
 // catch 404 and forward to error handler
-app.use(function (req: express.Request, res: express.Response, next: Function) {
+app.use(function (req: Request, res: Response, next: Function) {
     let err = new Error("Not Found");
     next(err);
 });
 
 // production error handler
 // no stacktrace leaked to user
-app.use(function (err: any, req: express.Request, res: express.Response, next: express.NextFunction) {
+app.use(function (err: any, req: Request, res: Response, next: NextFunction) {
     res.status(err.status || 500);
     res.json({
         error: {},
