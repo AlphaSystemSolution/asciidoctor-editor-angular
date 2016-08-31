@@ -140,7 +140,7 @@ function decyptText(encryptedText: string): string {
     return clearText;
 }
 
-function extractFolders(manager: monk.Manager, res: Response, results) {
+function extractFolders(manager: monk.Manager, res: Response, results: Object[]) {
     let entries: IterableIterator<Object> = results.entries();
     let folders: Folder[] = [];
     results.forEach(function (entry) {
@@ -150,7 +150,7 @@ function extractFolders(manager: monk.Manager, res: Response, results) {
     res.json(folders);
 }
 
-function extractUser(manager: monk.Manager, res: Response, result) {
+function extractUser(manager: monk.Manager, res: Response, result: Object) {
     let body = {};
     if (result) {
         let user: User = <User>result;
