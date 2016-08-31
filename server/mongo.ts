@@ -1,7 +1,8 @@
 /// <reference path="../typings/index.d.ts" />
-import * as express from "express";
 import * as monk from "monk";
 import * as crypto from 'crypto';
+import {Request, Response, NextFunction} from 'express';
+import {ParsedAsJson} from 'body-parser';
 
 import {User, NewUser, DisplayableUser, Folder, NewFolder} from '../client/components/shared/model/common';
 
@@ -18,9 +19,10 @@ module DataRoute {
 
     export class Route {
 
-        public authenticate(req: express.Request, res: express.Response, next: express.NextFunction) {
-            let userName: string = req.body.userName;
-            let password: string = req.body.password;
+        public authenticate(req: Request & ParsedAsJson, res: Response, next: NextFunction) {
+            let body: any = req.body;
+            let userName: string = body.userName;
+            let password: string = body.password;
 
             if (!userName || !password) {
                 // TODO:
@@ -38,7 +40,7 @@ module DataRoute {
                 });
         }
 
-        public findChildFolders(req: express.Request, res: express.Response, next: express.NextFunction) {
+        public findChildFolders(req: Request & ParsedAsJson, res: Response, next: NextFunction) {
             let parentPath: string = req.body.parentPath;
 
             if (!parentPath) {
@@ -53,10 +55,11 @@ module DataRoute {
                 .then(results => extractFolders(manager, res, results));
         }
 
-        public createFolder(req: express.Request, res: express.Response, next: express.NextFunction) {
-            let userName: string = req.body.userName;
-            let folderName: string = req.body.folderName;
-            let parentPath: string = req.body.parentPath;
+        public createFolder(req: Request & ParsedAsJson, res: Response, next: NextFunction) {
+            let body: any = req.body;
+            let userName: string = body.userName;
+            let folderName: string = body.folderName;
+            let parentPath: string = body.parentPath;
 
             if (!userName) {
                 // TODO:
@@ -82,9 +85,10 @@ module DataRoute {
                 .catch(err => res.sendStatus(400).json({ "code": "FOLDER_ALREADY_EXISTS", "description": "Folder with the given name is already exists." }));
         }
 
-        public removeFolder(req: express.Request, res: express.Response, next: express.NextFunction) {
-            let userName: string = req.body.userName
-            let path: string = req.body.path;
+        public removeFolder(req: Request & ParsedAsJson, res: Response, next: NextFunction) {
+            let body: any = req.body;
+            let userName: string = body.userName
+            let path: string = body.path;
             if (!userName || !path) {
                 // TODO:
             }
@@ -136,7 +140,7 @@ function decyptText(encryptedText: string): string {
     return clearText;
 }
 
-function extractFolders(manager: monk.Manager, res: express.Response, results) {
+function extractFolders(manager: monk.Manager, res: Response, results) {
     let entries: IterableIterator<Object> = results.entries();
     let folders: Folder[] = [];
     results.forEach(function (entry) {
@@ -146,7 +150,7 @@ function extractFolders(manager: monk.Manager, res: express.Response, results) {
     res.json(folders);
 }
 
-function extractUser(manager: monk.Manager, res: express.Response, result) {
+function extractUser(manager: monk.Manager, res: Response, result) {
     let body = {};
     if (result) {
         let user: User = <User>result;
