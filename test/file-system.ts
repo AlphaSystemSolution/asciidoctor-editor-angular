@@ -6,6 +6,6 @@ const env = process.env;
 
 const files: string[] = fs.readdirSync(env['HOMEPATH']);
 
-for (var index in files) {
-    console.log("FILE: %s", files[index]);
+for (var file of files) {
+    console.log("FILE: %s", file);
 }

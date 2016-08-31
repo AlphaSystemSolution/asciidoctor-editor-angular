@@ -1,6 +1,6 @@
 /// <reference path="../typings/index.d.ts" />
 import * as monk from "monk";
-import * as Promise from "es6-promise";
+import {Promise} from "~monk~es6-promise";
 import {User, NewUser, DisplayableUser, Folder, NewFolder} from '../client/components/shared/model/common';
 import {EncryptionUtil} from './encryption-util';
 
@@ -74,12 +74,12 @@ export class MongoTool {
             .then(function (existingUser) {
                 // user exists, should reject
                 manager.close();
-                return Promise.Promise.reject({ "code": "USER_ALREADY_EXISTS", "description": "User already exists" });
+                return Promise.reject({ "code": "USER_ALREADY_EXISTS", "description": "User already exists" });
             })
             .catch(function (err) {
                 if (err.code && err.code === "USER_ALREADY_EXISTS") {
                     // if we are here that means we have found the user but since we are catching we need to re-reject the result
-                    return Promise.Promise.reject(err);
+                    return Promise.reject(err);
                 } else {
                     // user not found
                     console.log("No result, continuing creating user: %s", JSON.stringify(err));
@@ -96,7 +96,7 @@ export class MongoTool {
      */
     public static findUser(user: User): Promise<Object> {
         if (!user) {
-            return Promise.Promise.reject({ "code": "USER_NULL", "description": "Supplied user is null" });
+            return Promise.reject({ "code": "USER_NULL", "description": "Supplied user is null" });
         }
         let query = null;
         let id: any = user._id;
@@ -111,7 +111,7 @@ export class MongoTool {
         } else if (email) {
             query = { "email": email };
         } else {
-            return Promise.Promise.reject({ "code": "UNKNOWN_CRITERIA", "description": "Criteria provided is not valid" });
+            return Promise.reject({ "code": "UNKNOWN_CRITERIA", "description": "Criteria provided is not valid" });
         }
 
         let manager: monk.Manager = monk(MONGO_DATABASE_URI);
@@ -123,11 +123,11 @@ export class MongoTool {
                 if (result) {
                     console.log("User Found: %s " + JSON.stringify(result));
                     // we got some result
-                    returnValue = Promise.Promise.resolve(<User>result);
+                    returnValue = Promise.resolve(<User>result);
                 } else {
                     console.log("No result found: %s", JSON.stringify(user));
                     // no result found
-                    returnValue = Promise.Promise.reject({ "code": "USER_NOT_FOUND", "description": "No user record found based on citeria" });
+                    returnValue = Promise.reject({ "code": "USER_NOT_FOUND", "description": "No user record found based on citeria" });
                 }
                 manager.close();
                 return returnValue;
@@ -144,7 +144,7 @@ export class MongoTool {
      */
     public static createFolder(user: User, folderName?: string, parentPath?: string): Promise<Object> {
         if (!user || (user && !user.userName)) {
-            return Promise.Promise.reject({ "code": "USER_NULL", "description": "Supplied user is null" });
+            return Promise.reject({ "code": "USER_NULL", "description": "Supplied user is null" });
         }
         let path: string = null;
         if (!folderName) {
@@ -155,7 +155,7 @@ export class MongoTool {
             // if path belongs to surrent user then it must starts with "/<user_name>/"
             let p: string = MongoTool.ROOT_PATH + user.userName + MongoTool.ROOT_PATH;
             if (!parentPath.startsWith(p)) {
-                return Promise.Promise.reject({ "code": "INVALID_PARENT_PATH", "description": "Supplied parent path does not belong to current user" });
+                return Promise.reject({ "code": "INVALID_PARENT_PATH", "description": "Supplied parent path does not belong to current user" });
             }
         } else {
             parentPath = MongoTool.ROOT_PATH;
@@ -165,12 +165,12 @@ export class MongoTool {
         let folderCollection: monk.Collection = manager.get(MongoTool.FOLDER_COLLECTION_NAME);
         return folderCollection.insert(new NewFolder(folderName, path, parentPath))
             .then(function (newFolder) {
-                let returnValue: Promise<Object> = Promise.Promise.resolve(newFolder);
+                let returnValue: Promise<Object> = Promise..resolve(newFolder);
                 manager.close();
                 return returnValue;
             })
             .catch(function (err) {
-                let returnValue: Promise<Object> = Promise.Promise.reject(err);
+                let returnValue: Promise<Object> = Promise..reject(err);
                 manager.close();
                 return returnValue;
             });
@@ -197,19 +197,19 @@ export class MongoTool {
                 return MongoTool.createFolder(newUser)
                     .then(function (folderResult) {
                         let newFolder: Folder = <Folder>folderResult;
-                        let returnValue: Promise<Object> = Promise.Promise.resolve(newFolder);
+                        let returnValue: Promise<Object> = Promise.resolve(newFolder);
                         manager.close();
                         return returnValue;
                     })
                     .catch(function (err) {
-                        let returnValue: Promise<Object> = Promise.Promise.reject(err);
+                        let returnValue: Promise<Object> = Promise.reject(err);
                         manager.close();
                         return returnValue;
                     });
             })
             .catch(function (err) {
                 console.log("Error while creating user: %s", JSON.stringify(err));
-                let returnValue: Promise<Object> = Promise.Promise.reject(err);
+                let returnValue: Promise<Object> = Promise.reject(err);
                 manager.close();
                 return returnValue;
             });
