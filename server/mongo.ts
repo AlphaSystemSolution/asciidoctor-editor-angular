@@ -5,8 +5,6 @@ import crypto = require('crypto');
 import {Request, Response, NextFunction} from 'express';
 import {ParsedAsJson} from 'body-parser';
 
-import {User, NewUser, DisplayableUser, Folder, NewFolder} from '../client/components/shared/model/common';
-
 const ALGORITHM: string = "AES256";
 const KEY: string = "PRIVATE_ASCIIDOC_EDITOR_KEY";
 const INPUT_ENCODING: any = "utf8";
@@ -81,7 +79,7 @@ module DataRoute {
             let path: string = parentPath + folderName + "/";
             let manager: Manager = monk(MONGO_DATABASE_URI);
             let collection: Collection = manager.get(FOLDER_COLLECTION_NAME);
-            collection.insert(new NewFolder(folderName, path, parentPath))
+            collection.insert({ "name": folderName, "path": path, "parentPath": parentPath })
                 .then(result => res.json(result))
                 .catch(err => res.sendStatus(400).json({ "code": "FOLDER_ALREADY_EXISTS", "description": "Folder with the given name is already exists." }));
         }
@@ -163,6 +161,21 @@ function extractUser(manager: Manager, res: Response, result: Object) {
     }
     manager.close();
     res.json(body);
+}
+
+interface User {
+    _id?: any;
+    userName: string;
+    email: string;
+    password?: string;
+    active: boolean;
+}
+
+interface Folder {
+    _id?: any;
+    name: string;
+    parentPath: string;
+    path: string;
 }
 
 export = DataRoute;
