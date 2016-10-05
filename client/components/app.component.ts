@@ -1,10 +1,10 @@
 /**
  * Created by sali on 8/3/2016.
  */
-import {Component, OnInit} from '@angular/core';
-
-import {DataService} from './shared/data.service';
-
+import { Component, OnInit } from '@angular/core';
+import { Response } from '@angular/http';
+import { DataService } from './shared/data.service';
+import 'rxjs/add/operator/map';
 
 @Component({
     selector: 'editor-app',

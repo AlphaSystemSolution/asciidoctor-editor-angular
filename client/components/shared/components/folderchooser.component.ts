@@ -1,12 +1,12 @@
 /**
  * Created by sali on 8/21/2016.
  */
-import {Component, OnInit, ViewChild, AfterViewInit, Renderer, Input, Output, EventEmitter, SimpleChanges} from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, Renderer, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 
-import {Dialog, MenuItem, OverlayPanel, TreeNode} from 'primeng/primeng';
-
-import {DataService} from '../data.service';
-import {Folder, NewFolder} from '../model/common';
+import { Dialog, MenuItem, OverlayPanel, TreeNode } from 'primeng/primeng';
+import 'rxjs/add/operator/map';
+import { DataService } from '../data.service';
+import { Folder, NewFolder } from '../model/common';
 
 @Component({
     selector: 'folder-chooser',
@@ -107,7 +107,8 @@ export class FolderChooserComponent implements OnInit, AfterViewInit {
                 if (data.length <= 0) {
                     rootNode.leaf = true;
                 } else {
-                    data.forEach(element => {
+                    let folders: Folder[] = <Folder[]>data;
+                    folders.forEach(element => {
                         let folder: Folder = <Folder>element;
                         let node: TreeNode = { "label": folder.name, "data": folder, children: [], "leaf": false };
                         rootNode.children.push(node);

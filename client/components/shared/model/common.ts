@@ -4,10 +4,10 @@
 
 export interface User {
     _id?: any;
-    userName: string;
-    email: string;
+    userName?: string;
+    email?: string;
     password?: string;
-    active: boolean;
+    active?: boolean;
 }
 
 export class NewUser implements User {
@@ -20,9 +20,9 @@ export class DisplayableUser implements User {
 
 export interface Folder {
     _id?: any;
-    name: string;
-    parentPath: string;
-    path: string;
+    name?: string;
+    parentPath?: string;
+    path?: string;
 }
 
 export class NewFolder implements Folder {
