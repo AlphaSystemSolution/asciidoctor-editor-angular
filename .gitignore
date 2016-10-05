@@ -1,12 +1,8 @@
 node_modules
 .idea
 typings
-build/**/*.js
-build/**/*.js.map
-tools/**/*.js
-tools/**/*.js.map
-test/**/*.js
-test/**/*.js.map
+**/*.js
+**/*.js.map
 saved/**/*
 /npm-debug.log
 .vscode/**/*
