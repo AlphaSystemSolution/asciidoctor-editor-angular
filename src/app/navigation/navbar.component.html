@@ -1,0 +1,12 @@
+<div class="ui-toolbar-group-right">
+	<span style="font-size:small;" *ngIf="isLoggedIn()">{{ auth.displayName }</span>
+</div>
+<p-toolbar>
+	<div class="ui-toolbar-group-left">
+	</div>
+
+	<div class="ui-toolbar-group-right">
+		<button pButton type="button" label="Log In" icon="fa-sign-in" [routerLink]="['login']" *ngIf="!isLoggedIn()"></button>
+		<button pButton type="button" label="Log Out" icon="fa-sign-out" (click)="auth.logout()" *ngIf="isLoggedIn()"></button>
+	</div>
+</p-toolbar>

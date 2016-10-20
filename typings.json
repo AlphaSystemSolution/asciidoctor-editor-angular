@@ -1,0 +1,9 @@
+{
+  "name": "asciidoctor-editor-angular",
+  "dependencies": {
+    "monk": "registry:npm/monk#3.1.2+20160830164330"
+  },
+  "globalDependencies": {
+    "auth0-js": "registry:dt/auth0-js#0.0.0+20160830143606"
+  }
+}

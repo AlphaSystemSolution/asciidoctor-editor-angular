@@ -1,0 +1,4 @@
+{
+	"terminal.integrated.shell.windows": "C:\\tools\\Git\\git-bash.exe",
+    "typescript.check.workspaceVersion": false
+}
