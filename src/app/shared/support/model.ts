@@ -32,6 +32,15 @@ export class NewFolder implements Folder {
 }
 
 export interface AuthConfiguration {
-    clientId: string;
-    domain: string;
+  clientId: string;
+  domain: string;
+  apiToken: string;
+}
+
+export interface SignUpForm {
+  firstName: string;
+  lastName: string;
+  email: string;
+  userName: string;
+  password: string;
 }

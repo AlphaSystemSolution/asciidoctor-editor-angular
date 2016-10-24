@@ -1,0 +1,78 @@
+<br/>
+<p-growl [value]="msgs" sticky="sticky"></p-growl>
+<div class="ContentSideSections">
+
+	<form [formGroup]="signupForm" (ngSubmit)="onSubmit(signupForm.value)">
+		<p-panel header="Sign Up">
+
+			<!-- Start of main div -->
+			<div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 10px 0px">
+
+				<!-- Start of firstName row-->
+				<div class="ui-grid-row">
+					<div class="ui-grid-col-1">
+						<span>First Name *:</span>
+					</div>
+					<div class="ui-grid-col-6">
+						<input pInputText type="text" formControlName="firstName" placeholder="Required" />
+					</div>
+				</div>
+				<!-- End of firstName row-->
+
+				<!-- Start of lastName row-->
+				<div class="ui-grid-row">
+					<div class="ui-grid-col-1">
+						<span>Last Name *:</span>
+					</div>
+					<div class="ui-grid-col-6">
+						<input pInputText type="text" formControlName="lastName" placeholder="Required" />
+					</div>
+				</div>
+				<!-- End of lastName row-->
+
+				<!-- Start of email row-->
+				<div class="ui-grid-row">
+					<div class="ui-grid-col-1">
+						<span>Email *:</span>
+					</div>
+					<div class="ui-grid-col-6">
+						<input pInputText type="text" formControlName="email" placeholder="your_email@example.com" />
+					</div>
+				</div>
+				<!-- End of email row-->
+
+        <!-- Start of userName row-->
+				<div class="ui-grid-row">
+					<div class="ui-grid-col-1">
+						<span>User Name *:</span>
+					</div>
+					<div class="ui-grid-col-6">
+						<input pInputText type="text" formControlName="userName" placeholder="Required" />
+					</div>
+				</div>
+				<!-- End of userName row-->
+
+         <!-- Start of password row-->
+				<div class="ui-grid-row">
+					<div class="ui-grid-col-1">
+						<span>Password *:</span>
+					</div>
+					<div class="ui-grid-col-6">
+						<input pPassword type="password" formControlName="password" placeholder="Required" />
+					</div>
+				</div>
+				<!-- End of password row-->
+
+				<!-- Start of submit button row-->
+				<div class="ui-grid-row">
+					<div class="ui-grid-col-1"></div>
+					<div class="ui-grid-col-6">
+						<button pButton type="submit" label="Submit" [disabled]="!signupForm.valid"></button>
+					</div>
+				</div>
+				<!-- End of submit button row-->
+			</div>
+			<!-- End of main div-->
+		</p-panel>
+	</form>
+</div>
