@@ -14,7 +14,7 @@ export class NavbarComponent implements OnInit {
     console.log('inside NavbarComponent: %s', this.auth);
   }
 
-  public isLoggedIn(){
+  public isLoggedIn() {
     return this.auth.authenticated();
   }
 
