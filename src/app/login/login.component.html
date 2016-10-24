@@ -1,11 +1,38 @@
 <br/>
-<p-tabView>
-	<p-tabPanel header="Log In">
-		<div class="ui-g">
-		</div>
-	</p-tabPanel>
-	<p-tabPanel header="Sign Up">
-		<div class="ui-g">
-		</div>
-	</p-tabPanel>
-</p-tabView>
+<div class="ContentSideSections">
+	<p-growl [value]="msgs" sticky="sticky"></p-growl>
+
+	<form [formGroup]="loginForm" (ngSubmit)="onSubmit(loginForm.value)">
+		<p-panel header="Log In">
+			<div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid" style="margin: 10px 0px">
+
+				<div class="ui-grid-row">
+					<div class="ui-grid-col-2">
+						User Name *:
+					</div>
+					<div class="ui-grid-col-6">
+						<input pInputText type="text" formControlName="userName" placeholder="Required" />
+					</div>
+				</div> <!-- End of div "User" field-->
+
+				<div class="ui-grid-row">
+					<div class="ui-grid-col-2">
+						Password *:
+					</div>
+					<div class="ui-grid-col-6">
+						<input pInputText type="password" formControlName="password" placeholder="Required" />
+					</div>
+				</div> <!-- End of div "password" field-->
+
+				<div class="ui-grid-row">
+					<div class="ui-grid-col-2"></div>
+					<div class="ui-grid-col-6">
+						<button pButton type="submit" label="Submit" [disabled]="!loginForm.valid"></button>
+					</div>
+					<div class="ui-grid-col-4"></div>
+				</div> <!-- End of div "submit" button-->
+
+			</div> <!-- End of main div -->
+		</p-panel>
+	</form>
+</div>
