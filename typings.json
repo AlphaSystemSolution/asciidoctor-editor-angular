@@ -1,9 +1,10 @@
 {
   "name": "asciidoctor-editor-angular",
-  "dependencies": {
-    "monk": "registry:npm/monk#3.1.2+20160830164330"
+  "globalDevDependencies": {
+    "webdriverio": "registry:env/webdriverio#4.2.16+20161005232638"
   },
-  "globalDependencies": {
-    "auth0-js": "registry:dt/auth0-js#0.0.0+20160830143606"
+  "devDependencies": {
+    "assertion-error": "registry:npm/assertion-error#1.0.0+20160723033700",
+    "chai": "registry:npm/chai#3.5.0+20160723033700"
   }
 }
