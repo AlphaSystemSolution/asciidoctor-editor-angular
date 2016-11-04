@@ -247,14 +247,19 @@ module.exports = function(options) {
       }], {
         ignore: [
           'humans.txt',
-          'robots.txt'
+          'robots.txt',
+          'auth.config.json'
         ]
       }),
       new CopyWebpackPlugin([{
         from: 'src/assets/robots.txt'
       }, {
         from: 'src/assets/humans.txt'
-      }]),
+      }
+      /*, {
+        from: 'src/assets/auth.config.json'
+      }*/
+      ]),
 
       /*
        * Plugin: HtmlWebpackPlugin

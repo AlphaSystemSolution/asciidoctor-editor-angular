@@ -34,7 +34,11 @@ export class NewFolder implements Folder {
 export interface AuthConfiguration {
   clientId: string;
   domain: string;
-  apiToken: string;
+}
+
+export interface LoginForm {
+  userName: string;
+  password: string;
 }
 
 export interface SignUpForm {
@@ -43,4 +47,8 @@ export interface SignUpForm {
   email: string;
   userName: string;
   password: string;
+}
+
+export enum ResponseCode {
+  SUCCESS, SYSTEM_ERROR, UNKNOWN_ERROR
 }

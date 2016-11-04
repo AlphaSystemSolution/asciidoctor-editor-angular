@@ -69,6 +69,11 @@
       "from": "@angularclass/hmr-loader@>=3.0.2 <3.1.0",
       "resolved": "https://registry.npmjs.org/@angularclass/hmr-loader/-/hmr-loader-3.0.2.tgz"
     },
+    "@types/auth0-js": {
+      "version": "0.0.4",
+      "from": "@types/auth0-js@0.0.4",
+      "resolved": "https://registry.npmjs.org/@types/auth0-js/-/auth0-js-0.0.4.tgz"
+    },
     "@types/selenium-webdriver": {
       "version": "2.44.29",
       "from": "@types/selenium-webdriver@2.44.29",
@@ -294,9 +299,9 @@
       "resolved": "https://registry.npmjs.org/asynckit/-/asynckit-0.4.0.tgz"
     },
     "auth0-js": {
-      "version": "7.2.1",
-      "from": "auth0-js@7.2.1",
-      "resolved": "https://registry.npmjs.org/auth0-js/-/auth0-js-7.2.1.tgz",
+      "version": "7.4.0",
+      "from": "auth0-js@latest",
+      "resolved": "https://registry.npmjs.org/auth0-js/-/auth0-js-7.4.0.tgz",
       "dependencies": {
         "Base64": {
           "version": "0.1.4",
@@ -313,6 +318,11 @@
           "from": "qs@>=6.2.1 <7.0.0",
           "resolved": "https://registry.npmjs.org/qs/-/qs-6.3.0.tgz"
         },
+        "winchan": {
+          "version": "0.1.4",
+          "from": "winchan@0.1.4",
+          "resolved": "https://registry.npmjs.org/winchan/-/winchan-0.1.4.tgz"
+        },
         "xtend": {
           "version": "2.1.2",
           "from": "xtend@>=2.1.1 <2.2.0",
@@ -323,7 +333,37 @@
     "auth0-lock": {
       "version": "10.4.0",
       "from": "auth0-lock@latest",
-      "resolved": "https://registry.npmjs.org/auth0-lock/-/auth0-lock-10.4.0.tgz"
+      "resolved": "https://registry.npmjs.org/auth0-lock/-/auth0-lock-10.4.0.tgz",
+      "dependencies": {
+        "auth0-js": {
+          "version": "7.2.1",
+          "from": "auth0-js@7.2.1",
+          "resolved": "https://registry.npmjs.org/auth0-js/-/auth0-js-7.2.1.tgz",
+          "dependencies": {
+            "jsonp": {
+              "version": "0.0.4",
+              "from": "jsonp@>=0.0.4 <0.1.0"
+            }
+          }
+        },
+        "Base64": {
+          "version": "0.1.4",
+          "from": "Base64@>=0.1.3 <0.2.0"
+        },
+        "qs": {
+          "version": "6.3.0",
+          "from": "qs@>=6.2.1 <7.0.0"
+        },
+        "winchan": {
+          "version": "0.1.2",
+          "from": "auth0/winchan#v0.1.2",
+          "resolved": "git://github.com/auth0/winchan.git#d96ec07cb3b7cfed4005b2970f8aa57e90c5bbca"
+        },
+        "xtend": {
+          "version": "2.1.2",
+          "from": "xtend@>=2.1.1 <2.2.0"
+        }
+      }
     },
     "autoprefixer": {
       "version": "6.5.1",
@@ -2111,7 +2151,8 @@
       "dependencies": {
         "async": {
           "version": "1.5.2",
-          "from": "async@>=1.0.0 <2.0.0"
+          "from": "async@1.5.2",
+          "resolved": "https://registry.npmjs.org/async/-/async-1.5.2.tgz"
         },
         "glob": {
           "version": "5.0.15",
@@ -3422,7 +3463,8 @@
       "dependencies": {
         "core-js": {
           "version": "1.2.7",
-          "from": "core-js@>=1.0.0 <2.0.0"
+          "from": "core-js@1.2.7",
+          "resolved": "https://registry.npmjs.org/core-js/-/core-js-1.2.7.tgz"
         },
         "fbjs": {
           "version": "0.8.5",
@@ -3998,7 +4040,8 @@
       "dependencies": {
         "colors": {
           "version": "1.1.2",
-          "from": "colors@>=1.1.2 <1.2.0"
+          "from": "colors@1.1.2",
+          "resolved": "https://registry.npmjs.org/colors/-/colors-1.1.2.tgz"
         }
       }
     },
@@ -4450,11 +4493,6 @@
       "version": "1.0.0",
       "from": "widest-line@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/widest-line/-/widest-line-1.0.0.tgz"
-    },
-    "winchan": {
-      "version": "0.1.2",
-      "from": "auth0/winchan#v0.1.2",
-      "resolved": "git+https://github.com/auth0/winchan.git#d96ec07cb3b7cfed4005b2970f8aa57e90c5bbca"
     },
     "window-size": {
       "version": "0.1.0",

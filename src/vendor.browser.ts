@@ -14,6 +14,7 @@ import '@angular/forms';
 import '@angular/http';
 import '@angular/router';
 import 'angular2-jwt';
+import 'auth0-js';
 import 'auth0-lock';
 import 'primeng/primeng';
 

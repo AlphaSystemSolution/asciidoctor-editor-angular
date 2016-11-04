@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { Message } from 'primeng/primeng';
 import { AuthService } from '../shared/service/auth.service';
-import { SignUpForm } from '../shared/support/model';
+import { SignUpForm, ResponseCode } from '../shared/support/model';
 import { CustomValidators } from '../shared/support/custom.validators';
 
 @Component({
@@ -71,8 +71,35 @@ export class SignUpComponent implements OnInit {
 
   onSubmit(signupForm: SignUpForm) {
     this.msgs = [];
-    console.log('>>>>>>>>>>>>>>>>>>>>>: %s', JSON.stringify(signupForm));
-    // TODO: call AuthService to signup
-    this.router.navigate(['']);
+    let signupResult: any = this.auth.signup(signupForm.userName, signupForm.password,
+      signupForm.email, signupForm.firstName, signupForm.lastName);
+    let navigation: string = undefined;
+    if (signupResult) {
+      let code: ResponseCode = signupResult.result;
+      switch (code) {
+        case ResponseCode.SUCCESS:
+          navigation = 'login';
+          break;
+        case ResponseCode.SYSTEM_ERROR:
+          this.msgs.push({
+            severity: 'error',
+            summary: 'Error Message',
+            detail: 'System error occurred while signing up'
+          });
+          break;
+        case ResponseCode.UNKNOWN_ERROR:
+          this.msgs.push({
+            severity: 'error',
+            summary: 'Error Message',
+            detail: 'Unknown error occurred while signing up'
+          });
+          break;
+        default:
+          break;
+      }
+    }
+    if (navigation) {
+      this.router.navigate([navigation]);
+    }
   }
 }
