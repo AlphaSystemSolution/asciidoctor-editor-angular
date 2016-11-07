@@ -21,8 +21,8 @@
       "hammerjs",
       "jasmine",
       "node",
-      "protractor",
-      "selenium-webdriver",
+      // "protractor",
+      // "selenium-webdriver",
       "source-map",
       "uglify-js",
       "webpack"
