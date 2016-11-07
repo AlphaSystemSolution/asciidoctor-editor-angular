@@ -62,3 +62,7 @@ npm-debug.log
 
 # E2E
 e2e/build/**/*
+
+build/**/*
+
+.vscode/**/*
